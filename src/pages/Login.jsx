@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 import loginSchema from "../validation/loginSchema";
 import { login } from "../services/authservice";
-import { useState } from "react";
-import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,14 +25,26 @@ export default function Login() {
 
       const res = await login(data);
 
+      // Handle both direct data return or axios wrapped response
       const token = res?.token || res?.data?.token;
+      const user = res?.user || res?.data?.user;
 
       if (token) {
         localStorage.setItem("token", token);
 
+        // Store user payload (includes role: "admin" | "user")
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        }
+
         toast.success("Login successful!");
 
-        navigate("/dashboard");
+        // Role-based routing
+        if (user?.role === "admin") {
+          navigate("/admin/users");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         toast.error("Invalid login response");
       }

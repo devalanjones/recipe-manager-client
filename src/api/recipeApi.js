@@ -1,20 +1,30 @@
 import api from "./axios";
 
-export let getRecipes = () => api.get("/recipes");
+// Get user's own recipes
+export const getRecipes = () => api.get("/recipes");
 
-export let createRecipes = (data) =>
+// Get all recipes from all users (Explore feed with optional search & pagination)
+export const getExploreRecipes = (params) =>
+  api.get("/recipes/explore", { params });
+
+// Create a new recipe with image upload
+export const createRecipes = (data) =>
   api.post("/recipes", data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 
-export let getRecipe = (id) => api.get(`/recipes/${id}`);
+// Get a single recipe by ID
+export const getRecipe = (id) => api.get(`/recipes/${id}`);
 
-export let updateRecipe = (id, data) => api.put(`/recipes/${id}`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+// Update a recipe with image upload
+export const updateRecipe = (id, data) =>
+  api.put(`/recipes/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
 
-export let deleteRecipe = (id) => api.delete(`/recipes/${id}`);
+// Delete a recipe
+export const deleteRecipe = (id) => api.delete(`/recipes/${id}`);

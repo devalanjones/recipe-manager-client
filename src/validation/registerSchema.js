@@ -1,18 +1,21 @@
 import * as yup from "yup";
 
-let registerSchema = yup.object({
+const registerSchema = yup.object({
   username: yup
     .string()
+    .trim()
     .required("Username is required")
     .min(3, "Username must be at least 3 characters")
     .max(20, "Username cannot exceed 20 characters")
     .matches(
       /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores"
+      "Username can only contain letters, numbers, and underscores",
     ),
 
   email: yup
     .string()
+    .trim()
+    .lowercase()
     .required("Email is required")
     .email("Enter a valid email address"),
 
@@ -21,12 +24,13 @@ let registerSchema = yup.object({
     .required("Password is required")
     .matches(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character"
+      "Password must be at least 8 characters and include uppercase, lowercase, number, and special character",
     ),
+
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref("password")], "Passwords do not match")
-    .required("Confirm your password"),
+    .required("Confirm your password")
+    .oneOf([yup.ref("password"), null], "Passwords do not match"),
 });
 
-export default registerSchema
+export default registerSchema;
